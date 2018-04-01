@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# USAGE: $ tmux-init.sh CLASS_NUMBER PROJECT_NUMBER
+
+PROJ_PATH=$HOME/Google\ Drive/EECS/EECS_$1/projects/project$2
+SESSION="EECS_$1_project$2"
+echo $SESSION
+
+tmux -2 new-session -d -s $SESSION
+
+tmux -2 attach-session -t $SESSION

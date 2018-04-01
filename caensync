@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+################################################################################
+#								SYNC 2 CAEN									   #
+#				Script for syncing the current directory to CAEN			   #
+################################################################################
+
+# Get correct path to sync to on CAEN
+AFSDIR="/home/amrith/Private/"
+AFSDIR+="$(pwd | grep -o "EECS\/.*")"
+
+# Get ssh status
+CAENSTATUS="$(ssh -O check caen 2>&1)"
+FASTSTATUS="$(ssh -O check fastcaen 2>&1)"
+
+# Check if there's an open ssh multiplex session to caen servers
+if [[ $CAENSTATUS =~ ^Master.* ]];
+then
+	echo "Syncing using normal CAEN"
+	AFSDIR="caen:$AFSDIR/"
+elif [[ $FASTSTATUS =~ ^Master.* ]]
+then
+	echo "Syncing using on-campus CAEN"
+	AFSDIR="fastcaen:$AFSDIR/"
+else
+	echo "No ssh connection to CAEN found"
+	exit 1
+fi
+
+echo ${AFSDIR}
+pwd
+
+# Sync to CAEN
+rsync \
+	-av \
+	--delete \
+	--exclude '.git' \
+	--filter=":- .gitignore" \
+	./ \
+	${AFSDIR}

@@ -14,6 +14,7 @@ CAENSTATUS="$(ssh -O check caen 2>&1)"
 FASTSTATUS="$(ssh -O check fastcaen 2>&1)"
 
 # Check if there's an open ssh multiplex session to caen servers
+# TODO: Find a better way to do this...
 if [[ $CAENSTATUS =~ ^Master.* ]];
 then
 	echo "Syncing using normal CAEN"
@@ -27,11 +28,12 @@ else
 	exit 1
 fi
 
-echo ${AFSDIR}
-pwd
+#echo ${AFSDIR}
+#pwd
 
 # Sync to CAEN
 rsync \
+	--verbose \
 	-av \
 	--delete \
 	--exclude '.git' \

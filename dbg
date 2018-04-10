@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Run it
+# Mount the current directory to /prog
+docker run -it --rm --privileged \
+	-v $(pwd):/prog docker-debugger:latest
